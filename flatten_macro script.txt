@@ -1,0 +1,201 @@
+'///////////////////////////////////////////////////////////////////////////////////
+'Script to flatten the data in the file "Relationships Export(AM).csv"
+'For now in this version, import the data from "Relationships Export.csv" tab delimited into cell A1 of Excel file where this script will be run.
+' After the script is run successfuly, new data should appear in columns "D", "E","F" and "G". 
+'Copy and paste the columns "D", "E","F" and "G" into a new Excel file
+'Save the Excel in the format you want to import the data into Gephi.
+
+
+
+Sub linksP6()
+
+'///////////////////////////////////////////////////////////////////////////////////
+'create variables
+'///////////////////////////////////////////////////////////////////////////////////
+Dim i, b, count, raw_data, test, d, nodeCount As Long
+
+Dim initialArray(), sourceArray(), nodeArray(), parentKey, targetArray(), parentArray(), initialWeightArray() As String
+Dim finalWeightArray(), activityArray(), typeArray(), activityParent As String
+
+Dim CalcMode, ViewMode As Long
+
+'Dim Wb As Workbook
+'Dim Pathname, New_Path, New_File As String
+
+
+'///////////////////////////////////////////////////////////////////////////////////
+'set Excel values to calcuate faster. Excel will not calculate until changes made
+'///////////////////////////////////////////////////////////////////////////////////
+With Application
+    CalcMode = .Calculation
+    .Calculation = xlCalculationManual
+    .ScreenUpdating = False
+    .DisplayAlerts = False
+End With
+
+
+'///////////////////////////////////////////////////////////////////////////////////
+'select active sheet and begin calculations
+'///////////////////////////////////////////////////////////////////////////////////
+With ActiveSheet
+    
+    'selects the active sheet window
+    .Select
+    
+    'select the active sheet to manipulate it
+    ViewMode = ActiveWindow.View
+    ActiveWindow.View = xlNormalView
+
+    'Don't display page breaks to speed up calcuation
+    .DisplayPageBreaks = False
+    
+    
+'///////////////////////////////////////////////////////////////////////////////////
+'creates arrays to input data into
+'///////////////////////////////////////////////////////////////////////////////////
+    
+    'determines the number of rows in column A and saves result to variable
+    raw_data = Cells(Rows.count, "A").End(xlUp).Row
+    
+
+    'creates an empty arrays with dimensions of column A
+ 
+    ReDim initialArray(raw_data)
+    ReDim sourceArray(raw_data)
+    ReDim nodeArray(raw_data)
+    ReDim parentArray(raw_data)
+    ReDim targetArray(raw_data)
+    ReDim activityArray(raw_data)
+    ReDim initialWeightArray(raw_data)
+    ReDim finalWeightArray(raw_data)
+    ReDim typeArray(raw_data)
+    
+    'Uncomment the line below to see in the debug window array size saved in variable
+    Debug.Print "Key Array Size: ", raw_data
+    'Stop
+
+'/////////////////////////////////////////////////////////////////////////////////////////////
+'puts column data into array
+'/////////////////////////////////////////////////////////////////////////////////////////////
+    
+    'loop through column A and add values to intialArray
+    
+    For i = 1 To raw_data
+            initialArray(i) = .Cells(i, 1).Value
+            activityArray(i) = .Cells(i, 2).Value
+            initialWeightArray(i) = .Cells(i, 3).Value
+            'Debug.Print intialArray(i)
+    Next i
+    'Stop
+    
+'/////////////////////////////////////////////////////////////////////////////////////////////
+'Take the data from the intial array and create the parent keys and and child keys for graphs
+'/////////////////////////////////////////////////////////////////////////////////////////////
+ 
+    count = 0
+    nodeCount = 0
+    For i = 2 To raw_data:
+    
+    'Debug.Print "i =", i
+    'Debug.Print "initialArray =", initialArray(i)
+    'Stop
+    
+        
+        'loop until you find the next "ID" in column
+        If initialArray(i) = "ID" Then
+            'Debug.Print "Found ID and moved on"
+            'Stop
+        
+            d = (i - 1)
+            
+            'Loop up and find the previous ID
+            Do Until initialArray(d) = "ID"
+                If initialArray(d) <> "ID" Then
+                    d = d - 1
+                End If
+            Loop
+                    
+            
+            parentKey = initialArray(d + 1)
+            activityParent = activityArray(d + 1)
+            
+            
+            
+            nodeArray(nodeCount) = initialArray(d + 1)
+            nodeCount = nodeCount + 1
+            'Debug.Print "Parent Key=", parentKey
+            'Stop
+            
+            'begin inner loop to iterate down from parent key
+            
+            b = (i - 1)
+            'Debug.Print "test =", test
+            
+            Do While initialArray(b) <> parentKey
+                'Debug.Print "In b loop"
+        
+                sourceArray(count) = parentKey
+                targetArray(count) = initialArray(b)
+                typeArray(count) = "Directed"
+                finalWeightArray(count) = initialWeightArray(b)
+                
+                'Debug.Print relationshipArray(count)
+                'Stop
+                count = count + 1
+                b = b - 1
+            Loop
+            
+        End If
+    Next i
+            
+            
+'/////////////////////////////////////////////////////////////////////////////////////////////
+'Same thing as above to Activity ID???
+'/////////////////////////////////////////////////////////////////////////////////////////////
+            
+            
+            
+        
+'/////////////////////////////////////////////////////////////////////////////////////////////
+'Outputs data into Excel spreadsheet
+'/////////////////////////////////////////////////////////////////////////////////////////////
+    
+    'Clear all cells formats
+    '.Cells.ClearFormats
+
+   
+    .Cells(1, "D").Value = "Source"
+    .Cells(1, "E").Value = "Target"
+    .Cells(1, "F").Value = "Type"
+    .Cells(1, "G").Value = "Weight"
+    
+    For i = 0 To raw_data
+        .Cells((i + 2), "D").Value = sourceArray(i)
+        .Cells((i + 2), "E").Value = targetArray(i)
+        .Cells((i + 2), "F").Value = typeArray(i)
+        .Cells((i + 2), "G").Value = finalWeightArray(i)
+       
+        'Debug.Print relationshipArray(i)
+        'Stop
+    Next i
+
+
+    'Autosize the columns to fit
+    .Columns.AutoFit
+
+End With
+
+
+
+'Pathname = ActiveWorkbook.Path
+
+
+
+'Wb.SaveAs (New_Path & New_File_Name)
+
+With Application
+        .ScreenUpdating = True
+End With
+
+End Sub
+
