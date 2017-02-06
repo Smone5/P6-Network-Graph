@@ -1,5 +1,9 @@
 # P6-Network-Graph
 A series of scripts and reports to generate a network graph of P6 nodes and edges in Gephi
+
+![alt text](https://github.com/Smone5/P6-Network-Graph/blob/master/P6_network_schedule.png "P6 Network Graph")
+
+
 ## Installation 
 Oracle P6, Microsoft Excel and Gephi (2010 or greater) must be installed. The Excel scripts are were designed and tested in Excel 2010. The data was only tested and used in Gephi 0.9.1 only. The reports and data came from Oracle P6 version 8.3. These instructions assume basic working knowledge of Oracle P6, Microsoft Excel and Gephi. 
 
