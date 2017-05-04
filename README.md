@@ -1,5 +1,5 @@
-# P6-Network-Graph
-A series of scripts and reports to generate a network graph of P6 nodes and edges in Gephi. I believe this provides an interesting perspective of the project and helps scheduler ask more questions. For example, what activities have the most neighbor connections and therefore are higher points of failure for the project? How is project's scope broken down? Is the project scope too clustered (possibly not defined well) or spread out too much (defined too well)?
+# Generate Oracle P6 Network Graph
+A series of scripts and reports to generate a network graph of Oracle P6 nodes and edges in Gephi. I believe this provides an interesting perspective of the project and helps scheduler ask more questions. For example, what activities have the most neighbor connections and therefore are higher points of failure for the project? How is project's scope broken down? Is the project scope too clustered (possibly not defined well) or spread out too much (defined too well)?
 
 
 ![alt text](https://github.com/Smone5/P6-Network-Graph/blob/master/P6_network_schedule.png "P6 Network Graph")
